@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Monlam Dictionary སྨོན་ལམ་ཚིག་མཛོད།</string>
+    <string name="app_name">Monlam Dictionary</string>
     <string name="searchhint_tb">﻿འདི་ནས་འཚོལ་གཤེར་གནང་རོགས།</string>
-    <string name="searchhint_en">type to search</string>
-    <string name="tab_tb">བོད་ཡིག\nTB</string>
-    <string name="tab_tbtoen">བོད་དབྱིན།\nTB-to-EN</string>
-    <string name="tab_entotb">དབྱིན་བོད།\nEN-to-TB</string>    
-
-	<string name="btn_search">search</string>
+    <string name="searchhint_en">Type to search</string>
+    <string name="tab_tb">Tibetan</string>
+    <string name="tab_tbtoen">TB &gt;&gt; EN</string>
+    <string name="tab_entotb">EN &gt;&gt; TB</string>    
+	<string name="btn_search">Search</string>
 </resources>
 

@@ -7,21 +7,22 @@
      >
  
      <org.lobsangmonlam.dictionary.MyTextView android:id="@+id/WORD"
-         android:layout_width="fill_parent"         
+         android:layout_width="fill_parent" 
          android:layout_height="wrap_content"
-         android:textSize="18sp"
-         android:background="#222222"
-         android:paddingLeft="3sp"
-         android:lineSpacingExtra="3sp"
-      /> 
+        
+         android:textSize="36sp"
+         android:padding="6dip"/> 
    
+       <!--   android:lineSpacingExtra="3sp" -->
      <org.lobsangmonlam.dictionary.MyTextView android:id="@+id/MEANING"
          android:layout_width="fill_parent"
          android:layout_height="wrap_content"
-         android:textSize="24sp"
-         android:lineSpacingExtra="10sp"
+         android:textSize="28sp"
+         android:padding="6dip"
+         android:layout_marginTop="-20dip"
+         android:background="#00000000"
+          android:lineSpacingExtra="5sp"
          />
      
-     <View android:background="#ffffff" android:layout_width="fill_parent" android:layout_height="1dp"  />
 </LinearLayout>
 

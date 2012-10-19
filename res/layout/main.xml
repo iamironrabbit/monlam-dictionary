@@ -16,14 +16,14 @@
          android:layout_height="wrap_content"
          android:layout_weight="1"
             android:hint="@string/searchhint_tb"
-           android:paddingTop="4dip"
-     android:paddingBottom="6dip"         
+              android:textSize="20sp"
          />
+  
   <Button android:text="@string/btn_search" 
     android:id="@+id/BTN_SEARCH"
     android:layout_width="wrap_content" 
-    android:layout_height="wrap_content"
-    android:layout_marginTop="4dip"
+    android:layout_height="fill_parent"
+    android:layout_margin="3dip"
     />
 
   </LinearLayout>

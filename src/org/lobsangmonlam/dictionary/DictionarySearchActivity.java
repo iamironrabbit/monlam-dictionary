@@ -2,8 +2,11 @@ package org.lobsangmonlam.dictionary;
 
 import java.io.File;
 
+import com.actionbarsherlock.app.SherlockActivity;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -48,6 +51,7 @@ public class DictionarySearchActivity extends Activity implements TextWatcher, M
         
         setContentView(R.layout.main);
         
+        int dbResId = getIntent().getExtras().getInt("dbresid");
         String dbName = getIntent().getExtras().getString("db");
         
         try
@@ -55,14 +59,14 @@ public class DictionarySearchActivity extends Activity implements TextWatcher, M
         	File dbPath = new File(Environment.getExternalStorageDirectory(),DB_FOLDER_NAME);
         	
         	// Call the database adapter to create the database
-    		database = new DBAdapter(this, dbPath, dbName, dbName);
+    		database = new DBAdapter(this, dbResId, dbPath, dbName, dbName);
 	  
 	        tv = (TextView)findViewById(R.id.SEARCH);
 	        tv.addTextChangedListener(this);
 	        
 	        if (dbName.equals("entotb"))
 	        	tv.setHint(getString(R.string.searchhint_en));
-	        
+	       /* 
 	        Button btn = (Button)findViewById(R.id.BTN_SEARCH);
 	        btn.setOnClickListener(new OnClickListener(){
 
@@ -77,7 +81,7 @@ public class DictionarySearchActivity extends Activity implements TextWatcher, M
 				}
 	        	
 	        });
-	        
+	        */
 	        lv = (ListView)findViewById(R.id.mylist);
 	        
 	        lv.setTextFilterEnabled(true);
@@ -168,6 +172,20 @@ public class DictionarySearchActivity extends Activity implements TextWatcher, M
 	        
 	      }
 	   }
+
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+	}
+
+
+
+	@Override
+	public void finish() {
+		database.close();
+		super.finish();
+	}
     
     
    

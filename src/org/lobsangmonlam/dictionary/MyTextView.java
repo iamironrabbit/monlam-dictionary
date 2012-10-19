@@ -2,38 +2,82 @@ package org.lobsangmonlam.dictionary;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.text.ClipboardManager;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
-import android.widget.TextView.BufferType;
+import android.widget.Toast;
 
 public class MyTextView extends TextView {
 
-    Context context;
-    private static Typeface font;
-
+    Context mContext;
+    private boolean mDidInit = false;
+    
     public MyTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.context = context;
+        mContext = context;
 
-        
        init();
     }
 
-    private void init() {
+    
+    
+    public MyTextView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		  mContext = context;
+
+	       init();
+	}
+
+
+
+	public MyTextView(Context context) {
+		super(context);
+		  mContext = context;
+
+	       init();
+	}
+
+
+
+	private void init() {
+    	mDidInit = true;
     	
-    	if (font == null)
-    		 font = Typeface.createFromAsset(context.getAssets(),  MonlamConstants.DEFAULT_FONT);
+
+    	if (mContext == null)
+    		mContext = getContext();
     	
-        setTypeface(font);
+    
+        setTypeface(TibetanTypefaceManager.getCurrentTypeface(getContext()));
+        
+        setOnLongClickListener(new View.OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View v) {
+				  ClipboardManager cm = (ClipboardManager)mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+				  
+				  String shareText = getText().toString();
+				  shareText = TibConvert.convertPrecomposedTibetanToUnicode(shareText,0,shareText.length());
+	                cm.setText(shareText);
+	                Toast.makeText(mContext, "copied", Toast.LENGTH_SHORT).show();
+	            return true;
+			}
+        });
         
     }
     
 
-	@Override
-    public void setTypeface(Typeface tf) {
 
-        super.setTypeface(tf);
-        
-    }
+	@Override
+	public void setText(CharSequence text, BufferType type) {
+		if (!mDidInit)
+        	init();
+		String newText = text.toString().trim();
+		
+		newText = TibConvert.convertUnicodeToPrecomposedTibetan(text.toString());
+		super.setText(newText, type);
+	}
+	
+	
 
 }
