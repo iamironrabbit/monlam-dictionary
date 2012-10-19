@@ -6,7 +6,7 @@
      android:orientation="vertical"
      >
  
-     <org.lobsangmonlam.dictionary.MyTextView android:id="@+id/WORD"
+     <org.ironrabbit.type.CustomTypefaceTextView android:id="@+id/WORD"
          android:layout_width="fill_parent" 
          android:layout_height="wrap_content"
         
@@ -14,7 +14,7 @@
          android:padding="6dip"/> 
    
        <!--   android:lineSpacingExtra="3sp" -->
-     <org.lobsangmonlam.dictionary.MyTextView android:id="@+id/MEANING"
+     <org.ironrabbit.type.CustomTypefaceTextView android:id="@+id/MEANING"
          android:layout_width="fill_parent"
          android:layout_height="wrap_content"
          android:textSize="28sp"

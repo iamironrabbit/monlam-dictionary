@@ -11,7 +11,7 @@
     android:layout_height="wrap_content"
     >
     
-  <org.lobsangmonlam.dictionary.MyEditTextView android:id="@+id/SEARCH"
+  <org.ironrabbit.type.CustomTypefaceEditTextView android:id="@+id/SEARCH"
          android:layout_width="fill_parent"
          android:layout_height="wrap_content"
          android:layout_weight="1"
