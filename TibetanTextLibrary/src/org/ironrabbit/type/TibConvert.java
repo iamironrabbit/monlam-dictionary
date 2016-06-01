@@ -1,4 +1,4 @@
-package org.lobsangmonlam.dictionary;
+package org.ironrabbit.type;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -1622,10 +1622,11 @@ public class TibConvert {
 	
 	public static String convertUnicodeToPrecomposedTibetan( String pStrIn, int nStart, int nEnd )
 	{
+    
 		// If this is our first time, we may need to create an index
 		createTableIndex();
 		
-		StringBuffer bStrOut = new StringBuffer(nEnd - nStart);
+		StringBuffer bStrOut = new StringBuffer();
 		
 		// The lookahead of characters we're currently considering
 		char chInput[] = { 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000 };
@@ -1643,7 +1644,7 @@ public class TibConvert {
 			if ( chPending[0] == 0xFFFF )
 			{
 				// First time through, so initialize things
-				chInput[nCol] = pStrIn.charAt( i );
+				chInput[nCol] = pStrIn.charAt(i);
 				char[] chTib = {chInput[nCol], chPending[0], chPending[1]};
 				decomposeTibetan(chTib);
 				chInput[nCol] = chTib[0];
@@ -1740,7 +1741,7 @@ public class TibConvert {
 						}
 					}
 				}
-/*				for ( int j = 0; j < TableAMapping.length; j++ )
+				for ( int j = 0; j < TableAMapping.length; j++ )
 				{
 					if ( TableAMapping[j][1] == chInput[1] )
 					{
@@ -1763,7 +1764,7 @@ public class TibConvert {
 							}
 						}
 					}
-				} */
+				} 
 			}
 
 			if ( ( i + 1 ) == nEnd )

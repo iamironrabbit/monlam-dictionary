@@ -1,6 +1,5 @@
 package org.ironrabbit.type;
 
-import org.lobsangmonlam.dictionary.TibConvert;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -59,9 +58,12 @@ public class CustomTypefaceTextView extends TextView {
 				  ClipboardManager cm = (ClipboardManager)mContext.getSystemService(Context.CLIPBOARD_SERVICE);
 				  
 				  String shareText = getText().toString();
-				  shareText = TibConvert.convertPrecomposedTibetanToUnicode(shareText,0,shareText.length());
-	                cm.setText(shareText);
-	                Toast.makeText(mContext, "copied", Toast.LENGTH_SHORT).show();
+				  
+				  if (CustomTypefaceManager.precomposeRequired())
+					  shareText = TibConvert.convertPrecomposedTibetanToUnicode(shareText,0,shareText.length());
+	               
+				  cm.setText(shareText);
+	              Toast.makeText(mContext, "Text copied", Toast.LENGTH_SHORT).show();
 	            return true;
 			}
         });
@@ -74,10 +76,17 @@ public class CustomTypefaceTextView extends TextView {
 	public void setText(CharSequence text, BufferType type) {
 		if (!mDidInit)
         	init();
-		String newText = text.toString().trim();
 		
-		newText = TibConvert.convertUnicodeToPrecomposedTibetan(text.toString());
-		super.setText(newText, type);
+		String result = text.toString();
+		
+		if (CustomTypefaceManager.precomposeRequired())
+		{
+			result = CustomTypefaceManager.handlePrecompose(result);
+		
+			super.setText(result, type);
+		}
+		
+		super.setText(result,type);
 	}
 	
 	

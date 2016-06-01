@@ -1,10 +1,7 @@
-/* Copyright (c) 2009, Nathan Freitas, Orbot / The Guardian Project - http://openideals.com/guardian */
 /* See LICENSE for licensing information */
 
 package org.ironrabbit.type;
 
-import org.lobsangmonlam.dictionary.R;
-import org.lobsangmonlam.dictionary.R.xml;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;

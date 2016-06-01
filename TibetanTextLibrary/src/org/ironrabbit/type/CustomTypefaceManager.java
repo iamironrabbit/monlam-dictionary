@@ -6,13 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
-import org.lobsangmonlam.dictionary.R;
-import org.lobsangmonlam.dictionary.R.raw;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -20,9 +16,14 @@ public class CustomTypefaceManager {
 
 	private static Typeface mTypeface = null;
 	
-	public final static int mTypefaceIds[] = {R.raw.jomolhari,R.raw.monlamuniouchan2,R.raw.tcrcunicode,R.raw.tibmachuni};
-	public final static String mTypefaceStrings[] = {"jomolhari.ttf","monlamuniouchan2.ttf","tcrcunicode.ttf","tibmachuni.ttf"};
-	public final static String mTypefaceNames[] = {"Jomolhari","Monlam Uni Ouchan2","TCRC Unicode","Tibetan Machine Uni"};
+//	public final static int mTypefaceIds[] = {R.raw.jomolhari,R.raw.monlamuniouchan2,R.raw.tcrcunicode,R.raw.tibmachuni};
+//	public final static String mTypefaceStrings[] = {"jomolhari.ttf","monlamuniouchan2.ttf","tcrcunicode.ttf","tibmachuni.ttf"};
+//	public final static String mTypefaceNames[] = {"Jomolhari","Monlam Uni Ouchan2","TCRC Unicode","Tibetan Machine Uni"};
+	
+	
+	public final static int mTypefaceIds[] = {R.raw.jomolhari};
+	public final static String mTypefaceStrings[] = {"jomolhari.ttf"};
+	public final static String mTypefaceNames[] = {"Jomolhari"};
 	
 	private final static String FONT_FOLDER = "Fonts";	
 	
@@ -36,7 +37,7 @@ public class CustomTypefaceManager {
 	
 	public static void loadTypeface (Context context)
 	{
-    	File fileFolder = new File(Environment.getExternalStorageDirectory(),FONT_FOLDER);
+    	File fileFolder = new File(context.getExternalFilesDir(null),FONT_FOLDER);
     	fileFolder.mkdirs();
     	
     	for (int i = 0; i < mTypefaceIds.length; i++)
@@ -46,7 +47,7 @@ public class CustomTypefaceManager {
     		{
     			File fileTf = new File(fileFolder,mTypefaceStrings[i]);    	
     			if (!fileTf.exists())
-    				copyRawFile(context, mTypefaceIds[i], fileTf, "755", true);
+    				copyRawFile(context, mTypefaceIds[i], fileTf, true);
     		}
     		catch (Exception e)
     		{
@@ -69,19 +70,11 @@ public class CustomTypefaceManager {
 	 * @throws IOException on error
 	 * @throws InterruptedException when interrupted
 	 */
-	private static void copyRawFile(Context ctx, int resid, File file, String mode, boolean isGZipd) throws IOException, InterruptedException
+	private static void copyRawFile(Context ctx, int resid, File file, boolean isGZipd) throws IOException, InterruptedException
 	{
-		final String abspath = file.getAbsolutePath();
-		final FileOutputStream out = new FileOutputStream(file);
+		FileOutputStream out = new FileOutputStream(file);
 		InputStream is = ctx.getResources().openRawResource(resid);
-		
-		/*
-		if (isZipd)
-    	{
-    		ZipInputStream zis = new ZipInputStream(is);    		
-    		ZipEntry ze = zis.getNextEntry();
-    		is = zis;
-    	}*/
+	
 		if (isGZipd)
     	{
     		is = new GZIPInputStream(is);    		    		
@@ -94,7 +87,16 @@ public class CustomTypefaceManager {
 		}
 		out.close();
 		is.close();
-		// Change the permissions
-		Runtime.getRuntime().exec("chmod "+mode+" "+abspath).waitFor();
+		
+	}
+	
+	public static boolean precomposeRequired ()
+	{
+		return true;
+	}
+	
+	public static String handlePrecompose (String text)
+	{
+		return TibConvert.convertUnicodeToPrecomposedTibetan(text);
 	}
 }
