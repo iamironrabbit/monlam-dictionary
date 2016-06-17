@@ -18,13 +18,14 @@
         android:background="#f7f7e6"
         >
 
-        <org.ironrabbit.type.CustomTypefaceEditText android:id="@+id/SEARCH"
+        <org.ironrabbit.type.CustomTypefaceEditText android:id="@+id/searchbox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/searchhint_tb"
             android:textSize="20sp"
             android:focusable="true"
+            android:focusableInTouchMode="true"
             />
 
         <ImageView

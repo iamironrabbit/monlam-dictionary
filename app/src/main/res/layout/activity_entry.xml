@@ -15,6 +15,12 @@
         android:titleTextColor="@android:color/white"
         />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/defgroup"
+        >
     <org.ironrabbit.type.CustomTypefaceTextView android:id="@+id/WORD"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,8 +31,6 @@
     <ScrollView
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
-    <!--   android:lineSpacingExtra="3sp" -->
     <org.ironrabbit.type.CustomTypefaceTextView android:id="@+id/MEANING"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,5 +40,7 @@
         android:lineSpacingExtra="5sp"
         android:text="meaning meaning meaning meaning meaning meaning meaning meaning meaning meaning "
         />
-</ScrollView>
+    </ScrollView>
+
+    </LinearLayout>
 </LinearLayout>

@@ -1,15 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Monlam Dictionary</string>
+    <string name="main_title">སྨོན་ལམ་ཚིག་མཛོད་༡.༡།</string>
     <string name="searchhint_tb">﻿འདི་ནས་འཚོལ་གཤེར་གནང་རོགས།</string>
     <string name="searchhint_en">Type to search</string>
-    <string name="tab_tb">Tibetan</string>
-    <string name="tab_tbtoen">TB &gt;&gt; EN</string>
-    <string name="tab_entotb">EN &gt;&gt; TB</string>
+    <string name="tab_tb">བོད་ Tibetan</string>
+    <string name="tab_tbtoen">བོད་&gt;&gt; EN</string>
+    <string name="tab_entotb">EN &gt;&gt; བོད་</string>
     <string name="btn_search">Search</string>
+
+    <string name="button_install_app">Install App</string>
+    <string name="button_learn_more">Learn More</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_entry">EntryActivity</string>
+    <string name="title_activity_app_list">AppListActivity</string>
+    <string name="large_text">
+        "More great apps for your smartphone that let you read and write in Tibetan!"
+    </string>
+
+    <string name="app_zom_title">Zom Mobile Messenger</string>
+    <string name="app_zom_desc">Zom is a place where friends can be friends, and you can always speak your mind freely.\nའཛོམས་ནི་དྲ་རྒྱའི་ཉེན་སྲུང་གི་བདག་དབང་རང་ཉིད་ལ་ ཡོད་པའི་རིན་མེད་ཀྱི་སྤྱི་ཚོགས་འཕྲིིན་སྟེགས་ཞིག་ ཡིན་པ་དང་།ས་འཕྲིན་སྟེགས་ཀྱི་ཁྱད་ཆོས།</string>
+    <string name="app_zom_play_link">market://details?id=im.zom.messenger</string>
+    <string name="app_zom_direct_link">https://zom.im/download/</string>
+    <string name="app_zom_learn_more">https://zom.im/</string>
+
+    <string name="app_kb_title">Tibetan Keyboard</string>
+    <string name="app_kb_desc">This is a basic Tibetan keyboard from the Bho for Android open-source project</string>
+    <string name="app_kb_play_link">market://details?id=org.ironrabbit.bhoboard</string>
+    <string name="app_kb_direct_link">https://github.com/iamironrabbit/tibetan-keyboard/releases</string>
+    <string name="app_kb_learn_more">https://github.com/iamironrabbit/tibetan-keyboard</string>
+
 </resources>
 

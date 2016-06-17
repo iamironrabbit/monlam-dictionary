@@ -98,7 +98,7 @@ public class SearchFragment extends Fragment implements TextWatcher, MonlamConst
             // Call the database adapter to create the database
             database = new DBAdapter(getActivity(), dbresid, dbPath, db, db);
 
-            tv = (TextView)view.findViewById(R.id.SEARCH);
+            tv = (TextView)view.findViewById(R.id.searchbox);
             tv.addTextChangedListener(this);
 
             if (db.equals("entotb"))
