@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.lobsangmonlam.dictionary.EntryActivity"
+    android:orientation="vertical"
+    >
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@android:color/white"
+        android:titleTextColor="@android:color/white"
+        />
+
+    <org.ironrabbit.type.CustomTypefaceTextView android:id="@+id/WORD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="word"
+        android:textSize="36sp"
+        android:layout_margin="12dip"/>
+
+    <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--   android:lineSpacingExtra="3sp" -->
+    <org.ironrabbit.type.CustomTypefaceTextView android:id="@+id/MEANING"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="28sp"
+        android:layout_margin="12dip"
+        android:layout_marginTop="20dip"
+        android:lineSpacingExtra="5sp"
+        android:text="meaning meaning meaning meaning meaning meaning meaning meaning meaning meaning "
+        />
+</ScrollView>
+</LinearLayout>

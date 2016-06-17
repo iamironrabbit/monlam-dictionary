@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <ListView
+        android:id="@+id/mylist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#f7f7e6"
+        >
+
+        <org.ironrabbit.type.CustomTypefaceEditText android:id="@+id/SEARCH"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/searchhint_tb"
+            android:textSize="20sp"
+            android:focusable="true"
+            />
+
+        <ImageView
+            android:id="@+id/BTN_SEARCH"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="3dip"
+            android:src="@drawable/ic_search_black_36dp"
+            />
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="my_awesome_color">#33b5e5</color>
+    <color name="my_awesome_darker_color">#166a89</color>
+    <color name="accent">#cbc2991c</color>
+
+
+</resources>
