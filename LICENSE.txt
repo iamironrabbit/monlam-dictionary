@@ -1,0 +1,14 @@
+
+
+
+=== FONTS ===
+
+The Tibetan Machine Uni font is licensed under the terms of the GNU General Public License. Please read that license carefully before downloading the font software.
+
+The Tibetan Machine Uni font is Copyright © 2000, by Tony Duff; portions Copyright © 2004 by the Tibetan and Himalayan Library. This font is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+This font software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should find a copy of the GNU General Public License along with the font software on GNU's website. If not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+Read more: http://www.thlib.org/tools/#wiki=/access/wiki/site/26a34146-33a6-48ce-001e-f16ce7908a6a/tibetan%20machine%20uni.html#ixzz29jxZy2GK
