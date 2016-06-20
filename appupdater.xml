@@ -1,6 +1,6 @@
 <AppUpdater>
   <update>
-    <latestVersion>2.0-beta-1</latestVersion>
+    <latestVersion>2.0.0.1</latestVersion>
     <url>https://github.com/iamironrabbit/monlam-dictionary/releases</url>
     <releaseNotes>
 - First evolution
