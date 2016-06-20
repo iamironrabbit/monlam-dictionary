@@ -1,0 +1,11 @@
+<AppUpdater>
+  <update>
+    <latestVersion>2.1.1</latestVersion>
+    <url>https://github.com/javiersantos/AppUpdater/releases</url>
+    <releaseNotes>
+- First evolution
+- Second evolution
+- Bug fixes
+    </releaseNotes>
+  </update>
+</AppUpdater>
