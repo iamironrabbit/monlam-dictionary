@@ -17,7 +17,7 @@ android {
     buildToolsVersion project.ext.buildToolsVersion
 
     defaultConfig {
-        versionCode 203
+        versionCode 204
         versionName getVersionName()
         archivesBaseName = "MonlamDictionary-$versionName"
         minSdkVersion project.ext.minSdkVersion
