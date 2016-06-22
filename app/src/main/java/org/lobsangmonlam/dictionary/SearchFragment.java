@@ -32,7 +32,7 @@ import java.io.File;
  * Use the {@link SearchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchFragment extends Fragment implements TextWatcher, MonlamConstants {
+public class SearchFragment extends Fragment implements MonlamConstants {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
@@ -98,12 +98,6 @@ public class SearchFragment extends Fragment implements TextWatcher, MonlamConst
             // Call the database adapter to create the database
             database = new DBAdapter(getActivity(), dbresid, dbPath, db, db);
 
-            tv = (TextView)view.findViewById(R.id.searchbox);
-            tv.addTextChangedListener(this);
-
-            if (db.equals("entotb"))
-                tv.setHint(getString(R.string.searchhint_en));
-
             lv = (ListView)view.findViewById(R.id.mylist);
 
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -123,14 +117,8 @@ public class SearchFragment extends Fragment implements TextWatcher, MonlamConst
 
             lv.setTextFilterEnabled(true);
 
-            View button = view.findViewById(R.id.BTN_SEARCH);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new QueryTask().execute(tv.getText().toString());
+            new QueryTask().execute("");
 
-                }
-            });
         }
         catch (Exception e)
         {
@@ -180,20 +168,9 @@ public class SearchFragment extends Fragment implements TextWatcher, MonlamConst
         void onFragmentInteraction(Uri uri);
     }
 
-    @Override
-    public void afterTextChanged(Editable s) {
-
-        new QueryTask().execute(s.toString());
-
-
-    }
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count,
-                                  int after) {
-
-    }
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    public void doSearch (String text)
+    {
+        new QueryTask().execute(text.toString());
 
     }
 
@@ -223,7 +200,7 @@ public class SearchFragment extends Fragment implements TextWatcher, MonlamConst
             {
                 String queryString = args[0];
 
-                String queryText = COLUMN_WORD + " LIKE '" + queryString + "%'";
+                String queryText = COLUMN_WORD + " LIKE '" + queryString + "%' AND + " + COLUMN_WORD + " IS NOT ''";
 
                 //OR " + COLUMN_MEANING + " LIKE '%" + queryString + "%'";
 
@@ -246,6 +223,7 @@ public class SearchFragment extends Fragment implements TextWatcher, MonlamConst
 
         // can use UI thread here
         protected void onPostExecute(final Void unused) {
+
 
         }
     }

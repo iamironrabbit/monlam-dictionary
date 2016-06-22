@@ -7,7 +7,7 @@ public interface MonlamConstants {
 	public final static String COLUMN_WORD = "word";
 	public final static String COLUMN_MEANING = "definition";
 	
-	public final static int QUERY_LIMIT = 20;
+	public final static int QUERY_LIMIT = 100;
 	
 	public final static String DB_ASSET_EXT = ".mp3";
 	

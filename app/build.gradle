@@ -22,10 +22,7 @@ android {
         compile project.ext.appcompat
         compile project(':tibetanTextLibrary')
         compile 'com.github.javiersantos:AppUpdater:2.1.1'
+        compile 'com.android.support:design:23.+'
 
     }
-}
-dependencies {
-    compile 'com.android.support:support-v4:23.+'
-
 }

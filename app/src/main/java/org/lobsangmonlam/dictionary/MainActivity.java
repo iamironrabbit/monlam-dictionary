@@ -9,18 +9,27 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.content.SharedPreferencesCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
@@ -37,11 +46,16 @@ import org.ironrabbit.type.CustomTypefaceManager;
 import org.ironrabbit.type.CustomTypefaceTextView;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SearchFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements SearchFragment.OnFragmentInteractionListener, TextWatcher {
 
     private FragmentTabHost mTabHost;
     private Toolbar mToolbar;
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
+    private EditText mSearchBox;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -49,10 +63,10 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
 
         CustomTypefaceManager.loadFromAssets(this);
 
-        setContentView(R.layout.tabs);
+        setContentView(R.layout.main);
 
         setTitle(getString(R.string.main_title));
-        mToolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getActionBarTextView().setTypeface(CustomTypefaceManager.getCurrentTypeface(this));
 
@@ -60,56 +74,122 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
         mToolbar.setCollapsible(true);
         mToolbar.setTitle(getTitle());
 
-        mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
-        mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(mViewPager);
 
-        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
+
+        changeTabsFont(mTabLayout);
+
+        mSearchBox = (EditText)findViewById(R.id.searchbox);
+        mSearchBox.addTextChangedListener(this);
+
+        View button = findViewById(R.id.searchbtn);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onTabChanged(String tab) {
-                mTabHost.clearFocus();
-
-                /**
-                 if (mTabHost.getCurrentView() != null) {
-
-                 View view = mTabHost.getCurrentView().getRootView().findViewById(R.id.searchbox);
-
-                 if (view != null)
-                 view.requestFocusFromTouch();
-                 }*/
+            public void onClick(View v) {
+             //   new QueryTask().execute(tv.getText().toString());
+            SearchFragment frag = (SearchFragment)((FragmentPagerAdapter)mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
+            frag.doSearch(mSearchBox.getText().toString());
             }
         });
-
-        Bundle bundle = new Bundle();
-        bundle.putString("db", "tbtotb");
-        bundle.putInt("dbresid", R.raw.tbtotb);
-        mTabHost.addTab(mTabHost.newTabSpec("tbtotb").setIndicator(getString(R.string.tab_tb)),
-                SearchFragment.class, bundle);
-
-
-        bundle = new Bundle();
-        bundle.putString("db", "entotb");
-        bundle.putInt("dbresid", R.raw.entotb);
-        mTabHost.addTab(mTabHost.newTabSpec("entotb").setIndicator(getString(R.string.tab_entotb)),
-                SearchFragment.class, bundle);
-
-
-        bundle = new Bundle();
-        bundle.putString("db", "tbtoen");
-        bundle.putInt("dbresid", R.raw.tbtoen);
-        mTabHost.addTab(mTabHost.newTabSpec("tbtoen").setIndicator(getString(R.string.tab_tbtoen)),
-                SearchFragment.class, bundle);
-
-
-        TabWidget tw = (TabWidget) mTabHost.findViewById(android.R.id.tabs);
-        for (int i = 0; i < tw.getTabCount(); i++) {
-            View tabView = tw.getChildTabViewAt(i);
-            TextView tv = (TextView) tabView.findViewById(android.R.id.title);
-            tv.setTypeface(CustomTypefaceManager.getCurrentTypeface(this));
-        }
 
         checkFirstTime();
 
         checkUpdates();
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+        Bundle bundle = new Bundle();
+        bundle.putString("db", "tbtotb");
+        bundle.putInt("dbresid", R.raw.tbtotb);
+        SearchFragment frag = new SearchFragment();
+        frag.setArguments(bundle);
+        adapter.addFragment( frag, getString(R.string.tab_tb));
+
+        bundle = new Bundle();
+        bundle.putString("db", "entotb");
+        bundle.putInt("dbresid", R.raw.entotb);
+        frag = new SearchFragment();
+        frag.setArguments(bundle);
+        adapter.addFragment( frag, getString(R.string.tab_entotb));
+
+        bundle = new Bundle();
+        bundle.putString("db", "tbtoen");
+        bundle.putInt("dbresid", R.raw.tbtoen);
+        frag = new SearchFragment();
+        frag.setArguments(bundle);
+        adapter.addFragment( frag, getString(R.string.tab_tbtoen));
+
+        viewPager.setAdapter(adapter);
+
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 1)
+                    mSearchBox.setHint(getString(R.string.searchhint_en));
+                else
+                    mSearchBox.setHint(getString(R.string.searchhint_tb));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    private void changeTabsFont(TabLayout tabLayout) {
+
+        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+        int tabsCount = vg.getChildCount();
+        for (int j = 0; j < tabsCount; j++) {
+            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+            int tabChildsCount = vgTab.getChildCount();
+            for (int i = 0; i < tabChildsCount; i++) {
+                View tabViewChild = vgTab.getChildAt(i);
+                if (tabViewChild instanceof TextView) {
+                    ((TextView) tabViewChild).setTypeface(CustomTypefaceManager.getCurrentTypeface(this), Typeface.NORMAL);
+                }
+            }
+        }
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 
     private void checkUpdates ()
@@ -207,4 +287,23 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+//        new QueryTask().execute(s.toString());
+        SearchFragment frag = (SearchFragment)((FragmentPagerAdapter)mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
+        frag.doSearch(mSearchBox.getText().toString());
+
+    }
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count,
+                                  int after) {
+
+    }
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
 }
