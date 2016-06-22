@@ -19,7 +19,7 @@ android {
     defaultConfig {
         versionCode 203
         versionName getVersionName()
-        archivesBaseName = "Zom-$versionName"
+        archivesBaseName = "MonlamDictionary-$versionName"
         minSdkVersion project.ext.minSdkVersion
         targetSdkVersion project.ext.targetSdkVersion
         applicationId "org.lobsangmonlam.dictionary"
