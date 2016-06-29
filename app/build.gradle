@@ -38,6 +38,5 @@ android {
         compile project(':tibetanTextLibrary')
         compile 'com.github.javiersantos:AppUpdater:2.1.1'
         compile 'com.android.support:design:23.+'
-
     }
 }
