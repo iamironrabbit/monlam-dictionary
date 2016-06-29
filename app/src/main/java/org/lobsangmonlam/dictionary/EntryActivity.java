@@ -63,12 +63,13 @@ public class EntryActivity extends AppCompatActivity {
             case android.R.id.home:
                finish();
                 return true;
-            case R.id.action_save:
-                saveAsBitmap();
+            case R.id.action_edit:
+                openDrawingEditor();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     private ShareActionProvider mShareActionProvider;
 
@@ -100,51 +101,15 @@ public class EntryActivity extends AppCompatActivity {
         mShareActionProvider.setShareIntent(shareIntent);
     }
 
-    private void saveAsBitmap ()
+    private void openDrawingEditor ()
     {
+        Intent intent = new Intent(this, DrawingActivity.class);
+        intent.putExtra("word",defWord);
+        intent.putExtra("meaning",defMeaning);
+        startActivity(intent);
 
-        try {
-            int width = 640;
-            int height = 480;
-
-            Bitmap  bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-
-            Paint paintFill = new Paint();
-            paintFill.setColor(Color.WHITE);
-
-            // draw a rectangle
-            paintFill.setColor(Color.WHITE);
-            paintFill.setStyle(Paint.Style.FILL); //fill the background with blue color
-            canvas.drawRect(0,0,width,height,paintFill);
-
-            TextPaint tp = new TextPaint();
-            tp.setColor(Color.GRAY);
-            tp.setTextSize(40);
-            tp.setAntiAlias(true);
-            tp.setTypeface(CustomTypefaceManager.getCurrentTypeface(this));
-
-            StaticLayout sl = new StaticLayout(defWord + '\n' + defMeaning, tp,
-            width, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false);
-            canvas.translate(20, 20);
-            sl.draw(canvas);
-
-            File outFolder = new File(Environment.getExternalStorageDirectory(), MonlamConstants.DB_FOLDER_NAME);
-            File outFile = new File(outFolder, new java.util.Date().getTime() + ".jpg");
-            FileOutputStream fos = new FileOutputStream(outFile);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 95, fos);
-
-            fos.close();;
-
-            Intent share = new Intent(Intent.ACTION_SEND);
-            share.setType("image/jpg");
-            share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(outFile));
-            startActivity(Intent.createChooser(share, "Share Image"));
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
     }
+
+
 
 }

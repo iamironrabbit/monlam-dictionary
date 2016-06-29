@@ -2,10 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" >
     <item
-        android:id="@+id/action_save"
+        android:id="@+id/action_edit"
         app:showAsAction="always"
-        android:icon="@drawable/ic_photo_black_36dp"
-        android:title="Save" />
+        android:icon="@drawable/ic_mode_edit_black_36dp"
+        android:title="Edit" />
     <item
         android:id="@+id/action_share"
         app:actionProviderClass="android.support.v7.widget.ShareActionProvider"

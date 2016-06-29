@@ -89,9 +89,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             //   new QueryTask().execute(tv.getText().toString());
-            SearchFragment frag = (SearchFragment)((FragmentPagerAdapter)mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
-            frag.doSearch(mSearchBox.getText().toString());
+                doSearch();
             }
         });
 
@@ -111,18 +109,19 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
         adapter.addFragment( frag, getString(R.string.tab_tb));
 
         bundle = new Bundle();
+        bundle.putString("db", "tbtoen");
+        bundle.putInt("dbresid", R.raw.tbtoen);
+        frag = new SearchFragment();
+        frag.setArguments(bundle);
+        adapter.addFragment( frag, getString(R.string.tab_tbtoen));
+
+        bundle = new Bundle();
         bundle.putString("db", "entotb");
         bundle.putInt("dbresid", R.raw.entotb);
         frag = new SearchFragment();
         frag.setArguments(bundle);
         adapter.addFragment( frag, getString(R.string.tab_entotb));
 
-        bundle = new Bundle();
-        bundle.putString("db", "tbtoen");
-        bundle.putInt("dbresid", R.raw.tbtoen);
-        frag = new SearchFragment();
-        frag.setArguments(bundle);
-        adapter.addFragment( frag, getString(R.string.tab_tbtoen));
 
         viewPager.setAdapter(adapter);
 
@@ -134,10 +133,12 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
 
             @Override
             public void onPageSelected(int position) {
-                if (position == 1)
+                if (position == 2)
                     mSearchBox.setHint(getString(R.string.searchhint_en));
                 else
                     mSearchBox.setHint(getString(R.string.searchhint_tb));
+
+//                doSearch();
             }
 
             @Override
@@ -292,8 +293,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
     public void afterTextChanged(Editable s) {
 
 //        new QueryTask().execute(s.toString());
-        SearchFragment frag = (SearchFragment)((FragmentPagerAdapter)mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
-        frag.doSearch(mSearchBox.getText().toString());
+        doSearch();
 
     }
     @Override
@@ -306,4 +306,10 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
 
     }
 
+    private void doSearch ()
+    {
+
+        SearchFragment frag = (SearchFragment)((FragmentPagerAdapter)mViewPager.getAdapter()).getItem(mViewPager.getCurrentItem());
+        frag.doSearch(mSearchBox.getText().toString());
+    }
 }

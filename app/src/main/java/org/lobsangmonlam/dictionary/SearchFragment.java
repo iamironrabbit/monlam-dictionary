@@ -196,6 +196,9 @@ public class SearchFragment extends Fragment implements MonlamConstants {
         // automatically done on worker thread (separate from UI thread)
         protected Void doInBackground(final String... args) {
 
+            if (database == null)
+                return null;
+
             try
             {
                 String queryString = args[0];
