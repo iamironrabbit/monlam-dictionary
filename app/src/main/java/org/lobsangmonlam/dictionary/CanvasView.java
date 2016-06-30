@@ -680,7 +680,6 @@ public class CanvasView extends View {
     public void setPaintStrokeColor(int color) {
         this.paintStrokeColor = color;
         invalidate();
-        draw(canvas);
     }
 
     /**
