@@ -10,6 +10,7 @@ package org.lobsangmonlam.dictionary;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -72,7 +73,7 @@ public class CanvasView extends View {
     private boolean isDown = false;
 
     // for Paint
-    private Paint.Style paintStyle = Paint.Style.STROKE;
+    private Paint.Style paintStyle = Paint.Style.FILL_AND_STROKE;
     private int paintStrokeColor   = Color.BLACK;
     private int paintFillColor     = Color.BLACK;
     private float paintStrokeWidth = 3F;
@@ -148,12 +149,8 @@ public class CanvasView extends View {
         // Create our ScaleGestureDetector
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
 
-        startX = 20;
-        startY = getHeight()/2;
-
-        textX = startX;
-        textY = startY;
     }
+
 
     /**
      * This method creates the instance of Paint.
@@ -265,28 +262,42 @@ public class CanvasView extends View {
             this.textX = this.startX;
             this.textY = this.startY;
             this.textPaint = this.createPaint();
+            this.textPaint.setSubpixelText(true);
 
-            textX = textX - textLength/2;
         }
 
-        String textToDisplay = text;
-        String tempText = "";
-        char[] chars;
         float textHeight = textPaint.descent() - textPaint.ascent();
         float lastY = textY;
-        int nextPos = 0;
-        int lengthBeforeBreak = textToDisplay.length();
-        int maxWidth = getWidth()-((int)textX)-20;
+        int maxWidth = getWidth()-((int)textX*2);
 
-        do {
-            lengthBeforeBreak = textToDisplay.length();
-            chars = textToDisplay.toCharArray();
-            nextPos = textPaint.breakText(chars, 0, chars.length, maxWidth, null);
-            tempText = textToDisplay.substring(0, nextPos);
-            textToDisplay = textToDisplay.substring(nextPos, textToDisplay.length());
-            canvas.drawText(tempText, textX, lastY, textPaint);
-            lastY += textHeight;
-        } while(nextPos < lengthBeforeBreak);
+        StringTokenizer st = new StringTokenizer(text,"་");
+        String nextWord = null;
+
+        while (st.hasMoreTokens()) {
+
+            StringBuffer line = new StringBuffer();
+            if (nextWord != null)
+                line.append(nextWord).append("་");
+
+            while (st.hasMoreTokens())
+            {
+                nextWord = st.nextToken();
+
+                if (textPaint.measureText(line.toString()+nextWord)<maxWidth) {
+                    line.append(nextWord);
+
+                    if (st.hasMoreTokens())
+                        line.append("་");
+                }
+                else
+                    break;
+            }
+
+            if (line.length() > 0) {
+                canvas.drawText(line.toString().substring(0, line.length()), textX, lastY, textPaint);
+                lastY += textHeight;
+            }
+        };
 
     }
 
@@ -423,6 +434,10 @@ public class CanvasView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         this.canvas = canvas;
+        onDrawImpl(canvas);
+    }
+
+    private void onDrawImpl (Canvas canvas) {
 
         // Before "drawPath"
         canvas.drawColor(this.baseColor);
@@ -664,6 +679,8 @@ public class CanvasView extends View {
      */
     public void setPaintStrokeColor(int color) {
         this.paintStrokeColor = color;
+        invalidate();
+        draw(canvas);
     }
 
     /**
@@ -821,7 +838,7 @@ public class CanvasView extends View {
     public Bitmap getBitmap() {
         Bitmap  bitmap = Bitmap.createBitmap(getWidth(),getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        draw(canvas);
+        onDrawImpl(canvas);
 
         return bitmap;
     }
@@ -836,6 +853,16 @@ public class CanvasView extends View {
         this.setDrawingCacheEnabled(true);
 
         return Bitmap.createScaledBitmap(this.getDrawingCache(), w, h, true);
+    }
+
+
+    /**
+     * This method draws the designated bitmap to canvas.
+     *
+     */
+    public void clearBitmap() {
+        this.bitmap = null;
+        this.invalidate();
     }
 
     /**
@@ -894,6 +921,13 @@ public class CanvasView extends View {
      */
     public byte[] getBitmapAsByteArray() {
         return this.getBitmapAsByteArray(CompressFormat.PNG, 100);
+    }
+
+    public void setPosition (int x, int y)
+    {
+        this.startX = x;
+        this.startY = y;
+
     }
 
 }

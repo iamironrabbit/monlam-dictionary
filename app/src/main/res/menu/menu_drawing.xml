@@ -3,9 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools" >
 
     <item
+        android:id="@+id/action_color_text"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_format_color_text_black_36dp"
+        android:title="Text Color" />
+    <item
+        android:id="@+id/action_color_fill"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_format_color_fill_black_36dp"
+        android:title="Fill Color" />
+    <item
         android:id="@+id/action_photo"
         app:showAsAction="always"
-        android:icon="@drawable/ic_insert_photo_black_36dp"
+        android:icon="@drawable/ic_add_a_photo_black_36dp"
         android:title="Add Photo" />
     <item
         android:id="@+id/action_share"
