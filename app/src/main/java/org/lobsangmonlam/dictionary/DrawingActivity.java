@@ -10,7 +10,9 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,6 +37,9 @@ import org.ironrabbit.type.CustomTypefaceManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DrawingActivity extends AppCompatActivity {
 
@@ -44,6 +49,14 @@ public class DrawingActivity extends AppCompatActivity {
     private Bitmap mBitmap;
 
     private File mOutFile;
+
+    String mCurrentPhotoPath;
+    File photoFile = null;
+
+
+    private final static int requestIdPhoto = 1234;
+    private final static int requestIdCamera = requestIdPhoto +1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +113,9 @@ public class DrawingActivity extends AppCompatActivity {
                 return true;
             case R.id.action_photo:
                 addPhoto();
+                return true;
+            case R.id.action_camera:
+                takePicture();
                 return true;
             case R.id.action_color_text:
                 setTextColor();
@@ -168,7 +184,47 @@ public class DrawingActivity extends AppCompatActivity {
         mCanvas.setText(mText.toString());
     }
 
-    int requestId = 1234;
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
+
+    private void takePicture ()
+    {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                ex.printStackTrace();
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "org.lobsangmonlam.dictionary.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, requestIdCamera);
+
+
+            }
+        }
+    }
 
     private void addPhoto ()
     {
@@ -190,8 +246,10 @@ public class DrawingActivity extends AppCompatActivity {
         //String cardMediaId = mCardModel.getStoryPath().getId() + "::" + mCardModel.getId() + "::" + MEDIA_PATH_KEY;
         // Apply is async and fine for UI thread. commit() is synchronous
         //mContext.getSharedPreferences("prefs", Context.MODE_PRIVATE).edit().putString(Constants.PREFS_CALLING_CARD_ID, cardMediaId).apply();
-        startActivityForResult(intent, requestId);
+        startActivityForResult(intent, requestIdPhoto);
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -200,41 +258,48 @@ public class DrawingActivity extends AppCompatActivity {
         String path = null;
         String mimeType = null;
 
-        if (intent != null) {
-            Uri uri = intent.getData();
-            mimeType = getContentResolver().getType(uri);
+        if (requestCode == requestIdCamera) {
+            if (resultCode == RESULT_OK) {
 
-            // Will only allow stream-based access to files
+                loadBitmap(photoFile.getAbsolutePath());
 
-            try {
-                if (uri.getScheme().equals("content") && Build.VERSION.SDK_INT >= 19) {
-                    grantUriPermission(getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                }
             }
-            catch (SecurityException se)
-            {
-                Log.d("OA","security exception accessing URI",se);
-            }
-
-            path = Utility.getRealPathFromURI(this, uri);
-
-
         }
+        else if (requestCode == requestIdPhoto) {
+            if (intent != null) {
+                Uri uri = intent.getData();
+                mimeType = getContentResolver().getType(uri);
 
-        if (resultCode == RESULT_OK) {
+                // Will only allow stream-based access to files
+
+                try {
+                    if (uri.getScheme().equals("content") && Build.VERSION.SDK_INT >= 19) {
+                        grantUriPermission(getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    }
+                } catch (SecurityException se) {
+                    Log.d("OA", "security exception accessing URI", se);
+                }
+
+                path = Utility.getRealPathFromURI(this, uri);
 
 
-            if (null == path) {
-                Log.d(TAG, "onActivityResult: Invalid file on import or capture");
-                Toast.makeText(getApplicationContext(), "file not found", Toast.LENGTH_SHORT).show();
-            } else if (null == mimeType) {
-                Log.d(TAG, "onActivityResult: Invalid Media Type");
-                Toast.makeText(getApplicationContext(), "invalid media", Toast.LENGTH_SHORT).show();
-            } else {
+            }
 
-                loadBitmap (path);
+            if (resultCode == RESULT_OK) {
 
+
+                if (null == path) {
+                    Log.d(TAG, "onActivityResult: Invalid file on import or capture");
+                    Toast.makeText(getApplicationContext(), "file not found", Toast.LENGTH_SHORT).show();
+                } else if (null == mimeType) {
+                    Log.d(TAG, "onActivityResult: Invalid Media Type");
+                    Toast.makeText(getApplicationContext(), "invalid media", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    loadBitmap(path);
+
+                }
             }
         }
     }

@@ -15,8 +15,13 @@
     <item
         android:id="@+id/action_photo"
         app:showAsAction="always"
-        android:icon="@drawable/ic_add_a_photo_black_36dp"
+        android:icon="@drawable/ic_insert_photo_black_36dp"
         android:title="Add Photo" />
+    <item
+        android:id="@+id/action_camera"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_add_a_photo_black_36dp"
+        android:title="Take Picture" />
     <item
         android:id="@+id/action_share"
         app:actionProviderClass="android.support.v7.widget.ShareActionProvider"

@@ -16,13 +16,16 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <uses-feature android:name="android.hardware.camera"
+        android:required="false" />
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
         android:normalScreens="true"
         android:smallScreens="true" />
 
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
 
     <application
         android:icon="@mipmap/ic_launcher"
@@ -46,6 +49,17 @@
             android:name=".AppListActivity"
             android:label="@string/title_activity_app_list" />
         <activity android:name=".DrawingActivity"></activity>
+
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="org.lobsangmonlam.dictionary.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
     </application>
 
 </manifest>
