@@ -12,6 +12,7 @@ import java.util.zip.ZipInputStream;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -28,6 +29,7 @@ public class DBAdapter
 {
 	
 	private static final int DATABASE_VERSION = 1;
+    private static final long ASSET_LENGTH = 36041728;
 	
 	// Index Key column
 	public static final String KEY_ID = "_id";
@@ -74,7 +76,16 @@ public class DBAdapter
 	
 	public static void installDb (Context context, File dbFile, String asset)
 	{
-        if (!dbFile.exists()) {
+		boolean doDbInstall = false;
+
+        if (!dbFile.exists())
+			doDbInstall = true;
+		else if (dbFile.length() != ASSET_LENGTH)
+		    doDbInstall = true;
+
+		if (doDbInstall)
+		{
+
             try {
                 copyAssetFile(context, asset, dbFile);
                ;

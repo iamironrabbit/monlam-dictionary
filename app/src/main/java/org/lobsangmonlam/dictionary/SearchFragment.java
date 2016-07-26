@@ -32,12 +32,12 @@ import java.io.File;
  * Use the {@link SearchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchFragment extends Fragment implements MonlamConstants {
+public class SearchFragment extends Fragment implements MonlamConstants, Runnable {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     private String dbTable;
-
+    private String queryString;
 
     private ListView lv;
     private TextView tv;
@@ -118,7 +118,7 @@ public class SearchFragment extends Fragment implements MonlamConstants {
 
             lv.setTextFilterEnabled(true);
 
-            new QueryTask().execute("");
+            doSearch("");
 
         }
         catch (Exception e)
@@ -171,7 +171,8 @@ public class SearchFragment extends Fragment implements MonlamConstants {
 
     public void doSearch (String text)
     {
-        new QueryTask().execute(text.toString());
+        queryString = text;
+        new Thread(this).start();
 
     }
 
@@ -187,49 +188,30 @@ public class SearchFragment extends Fragment implements MonlamConstants {
     };
 
 
-    private class QueryTask extends AsyncTask<String, Void, Void> {
+    public void run ()
+    {
+        if (database != null) {
 
-        // can use UI thread here
-        protected void onPreExecute() {
-
-        }
-
-        // automatically done on worker thread (separate from UI thread)
-        protected Void doInBackground(final String... args) {
-
-            if (database == null)
-                return null;
-
-            try
-            {
-                String queryString = args[0];
+            try {
 
                 String queryText = COLUMN_WORD + " LIKE '" + queryString + "%' AND " + COLUMN_WORD + " IS NOT ''";
 
                 //OR " + COLUMN_MEANING + " LIKE '%" + queryString + "%'";
 
-                cursor = database.getAllEntries(dbTable, new String[] {COLUMN_ID, COLUMN_WORD, COLUMN_MEANING}, queryText, null, null, null, COLUMN_WORD, " ASC LIMIT " + QUERY_LIMIT);
+                cursor = database.getAllEntries(dbTable, new String[]{COLUMN_ID, COLUMN_WORD, COLUMN_MEANING}, queryText, null, null, null, COLUMN_WORD, " ASC LIMIT " + QUERY_LIMIT);
 
-                Log.d("db","found items: " + cursor.getCount());
+                Log.d("db", "found items: " + cursor.getCount());
 
                 getActivity().startManagingCursor(cursor);
 
                 handler.sendMessage(new Message());
 
+            } catch (Exception e) {
+                Log.e("db", e.getLocalizedMessage(), e);
             }
-            catch (Exception e)
-            {
-                Log.e("db",e.getLocalizedMessage(),e);
-            }
-
-            return null;
         }
 
-        // can use UI thread here
-        protected void onPostExecute(final Void unused) {
 
-
-        }
     }
 
 

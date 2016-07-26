@@ -50,7 +50,6 @@ public class DrawingActivity extends AppCompatActivity {
 
     private File mOutFile;
 
-    String mCurrentPhotoPath;
     File photoFile = null;
 
 
@@ -189,23 +188,23 @@ public class DrawingActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
 
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         return image;
     }
 
     private void takePicture ()
     {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+
             // Create the File where the photo should go
             try {
                 photoFile = createImageFile();
@@ -213,16 +212,21 @@ public class DrawingActivity extends AppCompatActivity {
                 // Error occurred while creating the File
                 ex.printStackTrace();
             }
+            /**
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
                         "org.lobsangmonlam.dictionary.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, requestIdCamera);
 
 
-            }
+            }**/
+
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+
+            startActivityForResult(takePictureIntent, requestIdCamera);
+
         }
     }
 
@@ -259,11 +263,19 @@ public class DrawingActivity extends AppCompatActivity {
         String mimeType = null;
 
         if (requestCode == requestIdCamera) {
-            if (resultCode == RESULT_OK) {
 
+            if (photoFile != null && photoFile.exists() && photoFile.length() > 0)
                 loadBitmap(photoFile.getAbsolutePath());
-
+            else if (intent != null)
+            {
+                Uri uri = intent.getData();
+                if (uri != null) {
+                    path = Utility.getRealPathFromURI(this, uri);
+                    loadBitmap(path);
+                }
             }
+
+
         }
         else if (requestCode == requestIdPhoto) {
             if (intent != null) {
