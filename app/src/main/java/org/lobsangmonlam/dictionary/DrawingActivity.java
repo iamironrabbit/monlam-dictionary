@@ -2,10 +2,12 @@ package org.lobsangmonlam.dictionary;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
@@ -26,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import com.pavelsikun.vintagechroma.ChromaDialog;
@@ -43,15 +46,15 @@ import java.util.Date;
 
 public class DrawingActivity extends AppCompatActivity {
 
-    CanvasView mCanvas;
+    private CanvasView mCanvas;
 
     private StringBuffer mText;
     private Bitmap mBitmap;
 
     private File mOutFile;
+    private File photoFile = null;
 
-    File photoFile = null;
-
+    private static String lastBitmapPath = null;
 
     private final static int requestIdPhoto = 1234;
     private final static int requestIdCamera = requestIdPhoto +1;
@@ -98,6 +101,17 @@ public class DrawingActivity extends AppCompatActivity {
 
 
                 return false;
+            }
+        });
+
+
+        mCanvas.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                //At this point the layout is complete and the
+                //dimensions of myView and any child views are known.
+                if (lastBitmapPath != null)
+                    loadBitmap(lastBitmapPath);
             }
         });
 
@@ -181,8 +195,10 @@ public class DrawingActivity extends AppCompatActivity {
 
         mCanvas.setPosition(12,100);
         mCanvas.setText(mText.toString());
-    }
 
+
+
+    }
 
     private File createImageFile() throws IOException {
         // Create an image file name
@@ -254,27 +270,25 @@ public class DrawingActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         Log.d(TAG, "onActivityResult, requestCode:" + requestCode + ", resultCode: " + resultCode);
 
-        String path = null;
         String mimeType = null;
 
         if (requestCode == requestIdCamera) {
 
-            if (photoFile != null && photoFile.exists() && photoFile.length() > 0)
-                loadBitmap(photoFile.getAbsolutePath());
-            else if (intent != null)
-            {
+            if (photoFile != null && photoFile.exists() && photoFile.length() > 0) {
+                lastBitmapPath = photoFile.getAbsolutePath();
+                loadBitmap(lastBitmapPath);
+            }
+            else if (intent != null) {
                 Uri uri = intent.getData();
                 if (uri != null) {
-                    path = Utility.getRealPathFromURI(this, uri);
-                    loadBitmap(path);
+                    lastBitmapPath = Utility.getRealPathFromURI(this, uri);
+                    loadBitmap(lastBitmapPath);
                 }
             }
-
 
         }
         else if (requestCode == requestIdPhoto) {
@@ -293,7 +307,7 @@ public class DrawingActivity extends AppCompatActivity {
                     Log.d("OA", "security exception accessing URI", se);
                 }
 
-                path = Utility.getRealPathFromURI(this, uri);
+                lastBitmapPath = Utility.getRealPathFromURI(this, uri);
 
 
             }
@@ -301,7 +315,7 @@ public class DrawingActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
 
 
-                if (null == path) {
+                if (null == lastBitmapPath) {
                     Log.d(TAG, "onActivityResult: Invalid file on import or capture");
                     Toast.makeText(getApplicationContext(), "file not found", Toast.LENGTH_SHORT).show();
                 } else if (null == mimeType) {
@@ -309,7 +323,7 @@ public class DrawingActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "invalid media", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    loadBitmap(path);
+                    loadBitmap(lastBitmapPath);
 
                 }
             }
@@ -334,9 +348,25 @@ public class DrawingActivity extends AppCompatActivity {
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         mBitmap = BitmapFactory.decodeFile(path, options);
-        mCanvas.drawBitmap(mBitmap);
-        mShareActionProvider.setShareIntent(createShareIntent());
 
+        fillBitmap(mBitmap);
+
+        if (mShareActionProvider != null)
+         mShareActionProvider.setShareIntent(createShareIntent());
+
+    }
+
+    private void fillBitmap (Bitmap originalImage)
+    {
+        int width = mCanvas.getWidth();
+        int height = mCanvas.getHeight();
+        float originalWidth = originalImage.getWidth(), originalHeight = originalImage.getHeight();
+        float scale = width/originalWidth;
+        float xTranslation = 0.0f, yTranslation = (height - originalHeight * scale)/2.0f;
+        Matrix transformation = new Matrix();
+        transformation.postTranslate(xTranslation, yTranslation);
+        transformation.preScale(scale, scale);
+        mCanvas.drawBitmap(originalImage, transformation);
     }
 
     public static int calculateInSampleSize(
@@ -348,8 +378,8 @@ public class DrawingActivity extends AppCompatActivity {
 
         if (height > reqHeight || width > reqWidth) {
 
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
+            final int halfHeight = height;
+            final int halfWidth = width;
 
             // Calculate the largest inSampleSize value that is a power of 2 and keeps both
             // height and width larger than the requested height and width.

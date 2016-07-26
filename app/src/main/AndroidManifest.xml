@@ -48,7 +48,8 @@
         <activity
             android:name=".AppListActivity"
             android:label="@string/title_activity_app_list" />
-        <activity android:name=".DrawingActivity"></activity>
+        <activity android:name=".DrawingActivity"
+            ></activity>
 
 
         <provider

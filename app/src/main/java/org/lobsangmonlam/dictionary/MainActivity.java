@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
 
         checkFirstTime();
 
-        checkUpdates();
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -200,6 +199,10 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
           //  appUpdater.showAppUpdated(true);
             appUpdater.start();
         }
+        catch (RuntimeException e)
+        {
+            Log.d("AppUpdater","error checking app updates",e);
+        }
         catch (Exception e)
         {
             Log.d("AppUpdater","error checking app updates",e);
@@ -275,6 +278,10 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
 
             case R.id.action_apps:
                 showApps();
+                return true;
+
+            case R.id.action_update:
+                checkUpdates();
                 return true;
         }
         return super.onOptionsItemSelected(item);

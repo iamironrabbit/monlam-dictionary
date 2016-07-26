@@ -6,4 +6,9 @@
         app:showAsAction="always"
         android:icon="@drawable/ic_apps_white_36dp"
         android:title="Save" />
+    <item
+        android:id="@+id/action_update"
+        app:showAsAction="never"
+        android:title="Check Updates" />
+
 </menu>

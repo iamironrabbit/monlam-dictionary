@@ -15,6 +15,7 @@ import java.util.StringTokenizer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -28,6 +29,7 @@ import android.util.AttributeSet;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.MotionEvent;
+import android.view.animation.Transformation;
 // import android.util.Log;
 // import android.widget.Toast;
 
@@ -57,6 +59,7 @@ public class CanvasView extends View {
     private Context context = null;
     private Canvas canvas   = null;
     private Bitmap bitmap   = null;
+    private Matrix bitmapTransformation = null;
 
     private List<Path>  pathLists  = new ArrayList<Path>();
     private List<Paint> paintLists = new ArrayList<Paint>();
@@ -443,7 +446,15 @@ public class CanvasView extends View {
         canvas.drawColor(this.baseColor);
 
         if (this.bitmap != null) {
-            canvas.drawBitmap(this.bitmap, 0F, 0F, new Paint());
+            if (bitmapTransformation != null)
+            {
+                Paint paint = new Paint();
+                paint.setFilterBitmap(true);
+                canvas.drawBitmap(this.bitmap, bitmapTransformation, paint);
+
+            }
+            else
+                canvas.drawBitmap(this.bitmap, 0F, 0F, new Paint());
         }
 
         for (int i = 0; i < this.historyPointer; i++) {
@@ -871,6 +882,14 @@ public class CanvasView extends View {
      */
     public void drawBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
+        this.bitmapTransformation = null;
+        this.invalidate();
+    }
+
+    public void drawBitmap (Bitmap bitmap, Matrix transformation)
+    {
+        this.bitmap = bitmap;
+        this.bitmapTransformation = transformation;
         this.invalidate();
     }
 
@@ -928,5 +947,7 @@ public class CanvasView extends View {
         this.startY = y;
 
     }
+
+
 
 }
