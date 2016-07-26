@@ -36,8 +36,7 @@ public class SearchFragment extends Fragment implements MonlamConstants {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
-    private int dbresid;
-    private String db;
+    private String dbTable;
 
 
     private ListView lv;
@@ -49,7 +48,7 @@ public class SearchFragment extends Fragment implements MonlamConstants {
     private DBAdapter database;
     //String[] cols = new String[] { COLUMN_WORD, COLUMN_MEANING };
     //int[] names = new int[] {R.id.WORD, R.id.MEANING};
-    String[] cols = new String[] { COLUMN_WORD};
+    String[] cols = new String[] {COLUMN_WORD};
     int[] names = new int[] {R.id.WORD};
 
 
@@ -80,8 +79,7 @@ public class SearchFragment extends Fragment implements MonlamConstants {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            db = getArguments().getString("db");
-            dbresid = getArguments().getInt("dbresid");
+            dbTable = getArguments().getString("db");
         }
     }
 
@@ -93,10 +91,13 @@ public class SearchFragment extends Fragment implements MonlamConstants {
 
         try
         {
-            File dbPath = new File(Environment.getExternalStorageDirectory(),DB_FOLDER_NAME);
+            File dbPathFolder = new File(Environment.getExternalStorageDirectory(),DB_FOLDER_NAME);
+            File dbPath = new File(dbPathFolder,DBAdapter.DEFAULT_ASSET);
+
+            DBAdapter.installDb(getActivity(), dbPath, DBAdapter.DEFAULT_ASSET);
 
             // Call the database adapter to create the database
-            database = new DBAdapter(getActivity(), dbresid, dbPath, db, db);
+            database = DBAdapter.getInstance(getActivity(), dbPath);
 
             lv = (ListView)view.findViewById(R.id.mylist);
 
@@ -203,11 +204,11 @@ public class SearchFragment extends Fragment implements MonlamConstants {
             {
                 String queryString = args[0];
 
-                String queryText = COLUMN_WORD + " LIKE '" + queryString + "%' AND + " + COLUMN_WORD + " IS NOT ''";
+                String queryText = COLUMN_WORD + " LIKE '" + queryString + "%' AND " + COLUMN_WORD + " IS NOT ''";
 
                 //OR " + COLUMN_MEANING + " LIKE '%" + queryString + "%'";
 
-                cursor = database.getAllEntries(new String[] {COLUMN_ID, COLUMN_WORD, COLUMN_MEANING}, queryText, null, null, null, COLUMN_WORD, " ASC LIMIT " + QUERY_LIMIT);
+                cursor = database.getAllEntries(dbTable, new String[] {COLUMN_ID, COLUMN_WORD, COLUMN_MEANING}, queryText, null, null, null, COLUMN_WORD, " ASC LIMIT " + QUERY_LIMIT);
 
                 Log.d("db","found items: " + cursor.getCount());
 

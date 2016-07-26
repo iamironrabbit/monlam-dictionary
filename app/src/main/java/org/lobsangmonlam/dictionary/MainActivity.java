@@ -102,22 +102,19 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         Bundle bundle = new Bundle();
-        bundle.putString("db", "tbtotb");
-        bundle.putInt("dbresid", R.raw.tbtotb);
+        bundle.putString("db", "tbtb");
         SearchFragment frag = new SearchFragment();
         frag.setArguments(bundle);
         adapter.addFragment( frag, getString(R.string.tab_tb));
 
         bundle = new Bundle();
-        bundle.putString("db", "tbtoen");
-        bundle.putInt("dbresid", R.raw.tbtoen);
+        bundle.putString("db", "tben");
         frag = new SearchFragment();
         frag.setArguments(bundle);
         adapter.addFragment( frag, getString(R.string.tab_tbtoen));
 
         bundle = new Bundle();
         bundle.putString("db", "entotb");
-        bundle.putInt("dbresid", R.raw.entotb);
         frag = new SearchFragment();
         frag.setArguments(bundle);
         adapter.addFragment( frag, getString(R.string.tab_entotb));
