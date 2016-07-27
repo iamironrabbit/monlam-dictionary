@@ -1,9 +1,18 @@
 <AppUpdater>
   <update>
-    <latestVersion>2.0.0.1</latestVersion>
-    <url>https://github.com/iamironrabbit/monlam-dictionary/releases/download/2.0-beta-1/Monlam-Dictionary-2.0-beta-1.apk</url>
+    <latestVersion>2.0.0.207</latestVersion>
+    <url>https://github.com/iamironrabbit/monlam-dictionary/releases/download/2.0.0.207/MonlamDictionary-2.0.0.207-release.apk</url>
     <releaseNotes>
-      A major update to the whole app!
+LATEST UPDATES...
+- dictionary updated from the latest dictionary by Geshe Lobsang Monlam
+- added new camera option for image editing mode
+
+FROM BEFORE...
+- a big new update to the look and feel!
+- now using new Google Noto Tibetan font
+- easy export of definitions to other apps in text or customizeable image!
+- built-in Tibetan "app store" listing
+- provides Tibetan word suggestions with Zom Mobile Messenger app (https://zom.im)
     </releaseNotes>
   </update>
 </AppUpdater>
