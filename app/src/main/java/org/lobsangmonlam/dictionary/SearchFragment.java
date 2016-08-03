@@ -118,7 +118,7 @@ public class SearchFragment extends Fragment implements MonlamConstants, Runnabl
 
             lv.setTextFilterEnabled(true);
 
-            doSearch("");
+
 
         }
         catch (Exception e)
@@ -142,6 +142,7 @@ public class SearchFragment extends Fragment implements MonlamConstants, Runnabl
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
+
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");

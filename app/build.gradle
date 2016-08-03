@@ -39,5 +39,7 @@ android {
         compile 'com.github.javiersantos:AppUpdater:2.1.1'
         compile 'com.pavelsikun:vintage-chroma:1.5'
         compile 'com.android.support:design:23.+'
+        compile 'com.github.QuadFlask:colorpicker:0.0.10'
+
     }
 }

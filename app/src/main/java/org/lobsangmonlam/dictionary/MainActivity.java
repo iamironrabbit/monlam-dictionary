@@ -256,11 +256,6 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
         return titleTextView;
     }
 
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-	}
-
     @Override
     public void onFragmentInteraction(Uri uri) {
 

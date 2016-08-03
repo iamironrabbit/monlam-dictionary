@@ -1,6 +1,7 @@
 package org.lobsangmonlam.dictionary;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -31,6 +32,9 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.builder.ColorPickerClickListener;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.pavelsikun.vintagechroma.ChromaDialog;
 import com.pavelsikun.vintagechroma.IndicatorMode;
 import com.pavelsikun.vintagechroma.OnColorSelectedListener;
@@ -55,14 +59,22 @@ public class DrawingActivity extends AppCompatActivity {
     private File photoFile = null;
 
     private static String lastBitmapPath = null;
+    private static int lastTextColor = -1;
+    private static int lastBackgroundColor = -1;
 
     private final static int requestIdPhoto = 1234;
     private final static int requestIdCamera = requestIdPhoto +1;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initUI();
+
+    }
+
+    private void initUI ()
+    {
         setContentView(R.layout.activity_drawing);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
@@ -78,10 +90,13 @@ public class DrawingActivity extends AppCompatActivity {
         String word = getIntent().getStringExtra("word");
         String meaning = getIntent().getStringExtra("meaning");
 
+        if (meaning.indexOf(CanvasView.DELIM_TIBETAN)==-1)
+            mCanvas.setDelimeter(" ");
+
         mText = new StringBuffer();
-        mText.append(word);
-        mText.append("\n\n");
-        mText.append(meaning);
+        mText.append(word.trim());
+        mText.append(" ");
+        mText.append(meaning.trim());
 
         mCanvas.setFontFamily(CustomTypefaceManager.getCurrentTypeface(this));
         mCanvas.setMode(CanvasView.Mode.TEXT);
@@ -112,6 +127,17 @@ public class DrawingActivity extends AppCompatActivity {
                 //dimensions of myView and any child views are known.
                 if (lastBitmapPath != null)
                     loadBitmap(lastBitmapPath);
+
+                if (lastBackgroundColor != -1)
+                    mCanvas.setBaseColor(lastBackgroundColor);
+
+                if (lastTextColor != -1)
+                    mCanvas.setPaintStrokeColor(lastTextColor);
+
+                mCanvas.setPosition(12,100);
+                mCanvas.setText(mText.toString());
+
+
             }
         });
 
@@ -192,9 +218,6 @@ public class DrawingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        mCanvas.setPosition(12,100);
-        mCanvas.setText(mText.toString());
 
 
 
@@ -308,10 +331,12 @@ public class DrawingActivity extends AppCompatActivity {
                 }
 
                 lastBitmapPath = Utility.getRealPathFromURI(this, uri);
+                loadBitmap(lastBitmapPath);
 
 
             }
 
+            /**
             if (resultCode == RESULT_OK) {
 
 
@@ -323,10 +348,9 @@ public class DrawingActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "invalid media", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    loadBitmap(lastBitmapPath);
 
                 }
-            }
+            }*/
         }
     }
 
@@ -394,39 +418,104 @@ public class DrawingActivity extends AppCompatActivity {
 
     private void setTextColor ()
     {
-        new ChromaDialog.Builder()
-                .initialColor(mCanvas.getPaintStrokeColor())
-                .colorMode(ColorMode.ARGB) // RGB, ARGB, HVS, CMYK, CMYK255, HSL
-                .indicatorMode(IndicatorMode.HEX) //HEX or DECIMAL; Note that (HSV || HSL || CMYK) && IndicatorMode.HEX is a bad idea
-                .onColorSelected(new OnColorSelectedListener() {
-                    @Override
-                    public void onColorSelected(@ColorInt int color) {
-                        mCanvas.setPaintStrokeColor(color);
-                        mShareActionProvider.setShareIntent(createShareIntent());
 
-                    }
-                })
-                .create()
-                .show(getSupportFragmentManager(), "ChromaDialog");
+
+        boolean useOlder = android.os.Build.VERSION.SDK_INT < 14;
+
+        if (useOlder) {
+            new ChromaDialog.Builder()
+                    .initialColor(mCanvas.getPaintStrokeColor())
+                    .colorMode(ColorMode.ARGB) // RGB, ARGB, HVS, CMYK, CMYK255, HSL
+                    .indicatorMode(IndicatorMode.DECIMAL) //HEX or DECIMAL; Note that (HSV || HSL || CMYK) && IndicatorMode.HEX is a bad idea
+                    .onColorSelected(new OnColorSelectedListener() {
+                        @Override
+                        public void onColorSelected(@ColorInt int color) {
+                            lastTextColor = color;
+                            mCanvas.setPaintStrokeColor(color);
+                            mShareActionProvider.setShareIntent(createShareIntent());
+
+                        }
+                    })
+                    .create()
+                    .show(getSupportFragmentManager(), "ChromaDialog");
+        }
+        else
+        {
+            ColorPickerDialogBuilder
+                    .with(this)
+                    .setTitle("")
+                    .initialColor(mCanvas.getPaintStrokeColor())
+                    .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
+                    .density(12)
+                    .setPositiveButton(getString(android.R.string.ok), new ColorPickerClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+                            lastTextColor = selectedColor;
+                            mCanvas.setPaintStrokeColor(selectedColor);
+                            mShareActionProvider.setShareIntent(createShareIntent());                        }
+                    })
+                    .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    })
+                    .build()
+                    .show();
+        }
+
+
     }
 
     private void setFillColor ()
     {
-        new ChromaDialog.Builder()
-                .initialColor(mCanvas.getBaseColor())
-                .colorMode(ColorMode.ARGB) // RGB, ARGB, HVS, CMYK, CMYK255, HSL
-                .indicatorMode(IndicatorMode.HEX) //HEX or DECIMAL; Note that (HSV || HSL || CMYK) && IndicatorMode.HEX is a bad idea
-                .onColorSelected(new OnColorSelectedListener() {
-                    @Override
-                    public void onColorSelected(@ColorInt int color) {
-                        mCanvas.clearBitmap();
-                        mCanvas.setBaseColor(color);
-                        mShareActionProvider.setShareIntent(createShareIntent());
+        boolean useOlder = android.os.Build.VERSION.SDK_INT < 14;
+
+        if (useOlder) {
+            new ChromaDialog.Builder()
+                    .initialColor(mCanvas.getBaseColor())
+                    .colorMode(ColorMode.ARGB) // RGB, ARGB, HVS, CMYK, CMYK255, HSL
+                    .indicatorMode(IndicatorMode.DECIMAL) //HEX or DECIMAL; Note that (HSV || HSL || CMYK) && IndicatorMode.HEX is a bad idea
+                    .onColorSelected(new OnColorSelectedListener() {
+                        @Override
+                        public void onColorSelected(@ColorInt int color) {
+                            lastBackgroundColor = color;
+                            mCanvas.clearBitmap();
+                            mCanvas.setBaseColor(color);
+                            mShareActionProvider.setShareIntent(createShareIntent());
 
 
-                    }
-                })                .create()
-                .show(getSupportFragmentManager(), "ChromaDialog");
+                        }
+                    })
+                    .create()
+                    .show(getSupportFragmentManager(), "ChromaDialog");
+        }
+        else
+        {
+            ColorPickerDialogBuilder
+                    .with(this)
+                    .setTitle("")
+                    .initialColor(mCanvas.getBaseColor())
+                    .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
+                    .density(12)
+                    .setPositiveButton(getString(android.R.string.ok), new ColorPickerClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+                            lastBackgroundColor = selectedColor;
+                            mCanvas.clearBitmap();
+                            mCanvas.setBaseColor(selectedColor);
+                            mShareActionProvider.setShareIntent(createShareIntent());
+                        }
+                    })
+                    .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    })
+                    .build()
+                    .show();
+        }
+
+
     }
 
     private final static String TAG = "monlam";

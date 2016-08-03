@@ -102,6 +102,14 @@ public class CanvasView extends View {
     private ScaleGestureDetector mScaleDetector;
     private float mScaleFactor = 1.f;
 
+
+    //String delim1 = " ་་་";
+
+    public final static String DELIM_TIBETAN = "་";
+
+    String mDelimeter = DELIM_TIBETAN;
+
+
     /**
      * Copy Constructor
      *
@@ -265,22 +273,47 @@ public class CanvasView extends View {
             this.textX = this.startX;
             this.textY = this.startY;
             this.textPaint = this.createPaint();
-            this.textPaint.setSubpixelText(true);
-
+            //this.textPaint.setSubpixelText(true);
         }
 
         float textHeight = textPaint.descent() - textPaint.ascent();
         float lastY = textY;
         int maxWidth = getWidth()-((int)textX*2);
 
-        StringTokenizer st = new StringTokenizer(text,"་");
+        StringTokenizer st = new StringTokenizer(text,mDelimeter);
         String nextWord = null;
+        StringBuffer line = new StringBuffer();
 
+        while (st.hasMoreTokens()) {
+
+            nextWord = st.nextToken();
+
+            if (textPaint.measureText(line.toString()+mDelimeter+nextWord)>maxWidth) {
+                canvas.drawText(line.toString().substring(0, line.length()), textX, lastY, textPaint);
+                lastY += textHeight;
+
+                line = new StringBuffer();
+                line.append(nextWord);
+            }
+            else {
+                if (line.length() > 0)
+                    line.append(mDelimeter);
+
+                line.append(nextWord);
+
+            }
+        }
+
+        if (line.length() > 0)
+            canvas.drawText(line.toString().substring(0, line.length()), textX, lastY, textPaint);
+
+
+        /**
         while (st.hasMoreTokens()) {
 
             StringBuffer line = new StringBuffer();
             if (nextWord != null)
-                line.append(nextWord).append("་");
+                line.append(nextWord).append(delim2);
 
             while (st.hasMoreTokens())
             {
@@ -290,7 +323,7 @@ public class CanvasView extends View {
                     line.append(nextWord);
 
                     if (st.hasMoreTokens())
-                        line.append("་");
+                        line.append(delim3);
                 }
                 else
                     break;
@@ -300,8 +333,13 @@ public class CanvasView extends View {
                 canvas.drawText(line.toString().substring(0, line.length()), textX, lastY, textPaint);
                 lastY += textHeight;
             }
-        };
+        };*/
 
+    }
+
+    public void setDelimeter (String delimeter)
+    {
+        mDelimeter = delimeter;
     }
 
     /**

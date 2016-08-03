@@ -52,7 +52,13 @@ public class DBAdapter
         if (mInstance == null)
         {
             mInstance = new DBAdapter(context, dbFile);
+
         }
+		else if (mInstance.getDatabase() == null || (!mInstance.getDatabase().isOpen()))
+		{
+			mInstance = new DBAdapter(context, dbFile);
+
+		}
 
         return mInstance;
     }
@@ -72,6 +78,11 @@ public class DBAdapter
     	{
 			open();
 		}
+	}
+
+	private SQLiteDatabase getDatabase ()
+	{
+		return db;
 	}
 	
 	public static void installDb (Context context, File dbFile, String asset)
