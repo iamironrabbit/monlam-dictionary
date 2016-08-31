@@ -85,7 +85,7 @@ public class DBAdapter
 		return db;
 	}
 	
-	public static void installDb (Context context, File dbFile, String asset)
+	public static synchronized void installDb (Context context, File dbFile, String asset)
 	{
 		boolean doDbInstall = false;
 
@@ -98,6 +98,7 @@ public class DBAdapter
 		{
 
             try {
+				dbFile.getParentFile().mkdirs();
                 copyAssetFile(context, asset, dbFile);
                ;
             } catch (Exception e) {
@@ -181,8 +182,12 @@ public class DBAdapter
 	 */
 	public Cursor getAllEntries(String table, String[] columns, String selection, String[] selectionArgs,
 			String groupBy, String having, String sortBy, String sortOption) {
-		return db.query(table, columns, selection, selectionArgs, groupBy,
-				having, sortBy + " " + sortOption);
+
+		if (db != null)
+			return db.query(table, columns, selection, selectionArgs, groupBy,
+					having, sortBy + " " + sortOption);
+		else
+			return null;
 	}
 	
 	/**

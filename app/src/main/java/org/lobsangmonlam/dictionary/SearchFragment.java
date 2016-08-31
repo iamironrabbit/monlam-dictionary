@@ -91,9 +91,9 @@ public class SearchFragment extends Fragment implements MonlamConstants, Runnabl
 
         try
         {
-            File dbPathFolder = new File(Environment.getExternalStorageDirectory(),DB_FOLDER_NAME);
+            File dbPathFolder = new File(getContext().getExternalFilesDir(null), DB_FOLDER_NAME);
+           // File dbPathFolder = new File(Environment.getExternalStorageDirectory(),DB_FOLDER_NAME);
             File dbPath = new File(dbPathFolder,DBAdapter.DEFAULT_ASSET);
-
             DBAdapter.installDb(getActivity(), dbPath, DBAdapter.DEFAULT_ASSET);
 
             // Call the database adapter to create the database
