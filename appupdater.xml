@@ -1,9 +1,10 @@
 <AppUpdater>
   <update>
-    <latestVersion>2.0.0.208</latestVersion>
-    <url>https://github.com/iamironrabbit/monlam-dictionary/releases/download/2.0.0.208/MonlamDictionary-2.0.0.208-release.apk</url>
+    <latestVersion>2.0.0.209</latestVersion>
+    <url>https://github.com/iamironrabbit/monlam-dictionary/releases/download/2.0.0.209/MonlamDictionary-2.0.0.209-release.apk</url>
     <releaseNotes>
 LATEST UPDATES...
+- BUG FIX: Fixes database installation bug to enable translation/search to work again!
 - fixed for the image editor screen, including better support for landscape
 - dictionary updated from the latest dictionary by Geshe Lobsang Monlam
 - added new camera option for image editing mode
